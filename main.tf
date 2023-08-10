@@ -8,7 +8,7 @@ resource "aws_iam_role" "profile" {
   assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "jumphost" {
+resource "aws_iam_role_policy_attachment" "profile" {
   policy_arn = aws_iam_policy.profile.arn
   role       = aws_iam_role.profile.name
 }
