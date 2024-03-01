@@ -12,3 +12,9 @@ variable "profile_name" {
 variable "permissions" {
   description = "A JSON with a permissions policy. Note, a new policy will be created with these permissions."
 }
+
+variable "upstream_module" {
+  description = "Module that called this module."
+  type        = string
+  default     = null
+}
