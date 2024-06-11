@@ -9,6 +9,12 @@ variable "profile_name" {
   type        = string
 }
 
+variable "role_name" {
+  description = "Profile role name. If given, it will be used. Otherwise, the profile name will be used a name prefix."
+  type        = string
+  default     = null
+}
+
 variable "permissions" {
   description = "A JSON with a permissions policy. Note, a new policy will be created with these permissions."
 }
