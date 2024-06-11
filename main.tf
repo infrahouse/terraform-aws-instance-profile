@@ -5,7 +5,8 @@ resource "aws_iam_policy" "profile" {
 }
 
 resource "aws_iam_role" "profile" {
-  name_prefix        = var.profile_name
+  name               = var.role_name != null ? var.role_name : null
+  name_prefix        = var.role_name == null ? var.profile_name : null
   assume_role_policy = data.aws_iam_policy_document.assume.json
   tags               = local.tags
 }

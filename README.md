@@ -95,6 +95,7 @@ No modules.
 | <a name="input_extra_policies"></a> [extra\_policies](#input\_extra\_policies) | A map of additional policy ARNs to attach to the instance role | `map(string)` | `{}` | no |
 | <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions. | `any` | n/a | yes |
 | <a name="input_profile_name"></a> [profile\_name](#input\_profile\_name) | Instance profile name. | `string` | n/a | yes |
+| <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Profile role name. If given, it will be used. Otherwise, the profile name will be used a name prefix. | `string` | `null` | no |
 | <a name="input_upstream_module"></a> [upstream\_module](#input\_upstream\_module) | Module that called this module. | `string` | `null` | no |
 
 ## Outputs
