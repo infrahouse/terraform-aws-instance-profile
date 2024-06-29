@@ -1,3 +1,4 @@
+import json
 from textwrap import dedent
 
 import boto3
@@ -28,6 +29,8 @@ setup_logging(LOG, debug=True)
 @pytest.fixture(scope="session")
 def aws_iam_role():
     sts = boto3.client("sts")
+    response = sts.get_caller_identity()
+    LOG.debug("get_caller_identity() = %s", json.dumps(response, indent=4))
     return sts.assume_role(
         RoleArn=TEST_ROLE_ARN, RoleSessionName=TEST_ROLE_ARN.split("/")[1]
     )
