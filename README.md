@@ -106,3 +106,5 @@ No modules.
 | <a name="output_instance_profile_name"></a> [instance\_profile\_name](#output\_instance\_profile\_name) | Instance profile name. It's the same as the passed variable. |
 | <a name="output_instance_role_arn"></a> [instance\_role\_arn](#output\_instance\_role\_arn) | Role ARN that the instance gets. |
 | <a name="output_instance_role_name"></a> [instance\_role\_name](#output\_instance\_role\_name) | Role name that the instance gets. |
+| <a name="output_instance_role_policy_arn"></a> [instance\_role\_policy\_arn](#output\_instance\_role\_policy\_arn) | Role policy ARN that the instance gets. |
+| <a name="output_instance_role_policy_name"></a> [instance\_role\_policy\_name](#output\_instance\_role\_policy\_name) | Role policy name that the instance gets. |
