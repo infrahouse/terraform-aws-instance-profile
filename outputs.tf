@@ -28,3 +28,8 @@ output "instance_role_policy_arn" {
   description = "Role policy ARN that the instance gets."
   value       = aws_iam_policy.profile.arn
 }
+
+output "instance_role_policy_attachment" {
+  description = "aws_iam_role_policy_attachment.profile.id"
+  value       = aws_iam_role_policy_attachment.profile.id
+}
