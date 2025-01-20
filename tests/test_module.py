@@ -17,7 +17,6 @@ from tests.conftest import (
 
 @pytest.mark.parametrize("profile_name", ["foo", "very-long-name" * 10])
 def test_module(profile_name):
-
     terraform_module_dir = osp.join(TERRAFORM_ROOT_DIR, "instance-profile")
     with open(osp.join(terraform_module_dir, "terraform.tfvars"), "w") as fp:
         fp.write(

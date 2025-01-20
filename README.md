@@ -96,6 +96,7 @@ No modules.
 | <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions. | `any` | n/a | yes |
 | <a name="input_profile_name"></a> [profile\_name](#input\_profile\_name) | Instance profile name. | `string` | n/a | yes |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Profile role name. If given, it will be used. Otherwise, the profile name will be used a name prefix. | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map` | `{}` | no |
 | <a name="input_upstream_module"></a> [upstream\_module](#input\_upstream\_module) | Module that called this module. | `string` | `null` | no |
 
 ## Outputs
@@ -107,4 +108,5 @@ No modules.
 | <a name="output_instance_role_arn"></a> [instance\_role\_arn](#output\_instance\_role\_arn) | Role ARN that the instance gets. |
 | <a name="output_instance_role_name"></a> [instance\_role\_name](#output\_instance\_role\_name) | Role name that the instance gets. |
 | <a name="output_instance_role_policy_arn"></a> [instance\_role\_policy\_arn](#output\_instance\_role\_policy\_arn) | Role policy ARN that the instance gets. |
+| <a name="output_instance_role_policy_attachment"></a> [instance\_role\_policy\_attachment](#output\_instance\_role\_policy\_attachment) | aws\_iam\_role\_policy\_attachment.profile.id |
 | <a name="output_instance_role_policy_name"></a> [instance\_role\_policy\_name](#output\_instance\_role\_policy\_name) | Role policy name that the instance gets. |
