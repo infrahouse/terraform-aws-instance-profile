@@ -19,6 +19,11 @@ variable "permissions" {
   description = "A JSON with a permissions policy. Note, a new policy will be created with these permissions."
 }
 
+variable "tags" {
+  description = "A map of tags to add to resources."
+  default     = {}
+}
+
 variable "upstream_module" {
   description = "Module that called this module."
   type        = string
