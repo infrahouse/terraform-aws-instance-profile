@@ -11,7 +11,7 @@ permissions:
 jobs:
   terraform:
     name: 'Terraform Test'
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "Linux"]
     timeout-minutes: 120
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
