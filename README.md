@@ -21,7 +21,7 @@ Now we're ready to create the instance profile.
 ```hcl
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.6.1"
+  version = "1.6.2"
   
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
@@ -55,7 +55,7 @@ And now we want to create the profile with the `package-publisher` policy attach
 ```hcl
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.6.1"
+  version = "1.6.2"
   
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
