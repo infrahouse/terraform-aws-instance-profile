@@ -1,7 +1,7 @@
 variable "enable_ssm" {
   description = "Add AmazonSSMManagedInstanceCore policy to the instance role to grant an EC2 instance the minimum set of permissions needed to use AWS Systems Manager (SSM) core functionality."
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 variable "extra_policies" {
   description = "A map of additional policy ARNs to attach to the instance role"

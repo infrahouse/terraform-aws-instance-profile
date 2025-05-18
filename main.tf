@@ -37,7 +37,7 @@ resource "aws_iam_role_policy_attachment" "extra" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm" {
-  count = var.enable_ssm ? 1 : 0
+  count      = var.enable_ssm ? 1 : 0
   policy_arn = data.aws_iam_policy.ssm.arn
   role       = aws_iam_role.profile.name
 }
