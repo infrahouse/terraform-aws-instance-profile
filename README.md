@@ -1,6 +1,7 @@
 # terraform-aws-instance-profile
 
-The module conveniently bundles AWS resources to create an EC2 instance profile.
+This Terraform module creates and manages AWS IAM instance profiles for EC2 instances, 
+simplifying the process of attaching IAM roles to your instances.
 
 A user is asked to provide the instance profile name and permissions.
 
@@ -19,8 +20,9 @@ data "aws_iam_policy_document" "jumphost_permissions" {
 Now we're ready to create the instance profile.
 ```hcl
 module "jumphost_profile" {
-  source         = "infrahouse/instance-profile/aws"
-  version        = "~> 1.0"
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.6.1"
+  
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
 }
@@ -52,8 +54,9 @@ resource "aws_iam_policy" "package-publisher" {
 And now we want to create the profile with the `package-publisher` policy attached to it.
 ```hcl
 module "jumphost_profile" {
-  source         = "infrahouse/instance-profile/aws"
-  version        = "~> 1.0"
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.6.1"
+  
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
   extra_policies = {
@@ -61,6 +64,7 @@ module "jumphost_profile" {
   }
 }
 ```
+
 ## Requirements
 
 | Name | Version |
