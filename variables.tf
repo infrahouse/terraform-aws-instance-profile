@@ -10,7 +10,7 @@ variable "profile_name" {
 }
 
 variable "role_name" {
-  description = "Profile role name. If given, it will be used. Otherwise, the profile name will be used a name prefix."
+  description = "Profile role name. If given, it will be used. Otherwise, the profile name will be used as a name prefix."
   type        = string
   default     = null
 }

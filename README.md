@@ -1,13 +1,14 @@
 # terraform-aws-instance-profile
 
-The module conveniently bundles AWS resources to create an EC2 instance profile.
-
-A user is asked to provide the instance profile name and permissions.
+This Terraform module creates and manages AWS IAM instance profiles for EC2 instances, 
+simplifying the process of attaching IAM roles to your instances.
 
 ## Usage example
 
 ### Profile with embedded policy
+
 First, let's prepare permissions the profile will have.
+
 ```hcl
 data "aws_iam_policy_document" "jumphost_permissions" {
   statement {
@@ -16,19 +17,24 @@ data "aws_iam_policy_document" "jumphost_permissions" {
   }
 }
 ```
+
 Now we're ready to create the instance profile.
+
 ```hcl
 module "jumphost_profile" {
-  source         = "infrahouse/instance-profile/aws"
-  version        = "~> 1.0"
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.6.2"
+  
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
 }
 ```
+
 ### Profile with extra policy
 
 Let's say we want to create the instance profile and attach an existing policy to it.
 This is the existing policy.
+
 ```hcl
 data "aws_iam_policy_document" "package-publisher" {
   actions = [
@@ -49,11 +55,14 @@ resource "aws_iam_policy" "package-publisher" {
   policy      = data.aws_iam_policy_document.package-publisher.json
 }
 ```
+
 And now we want to create the profile with the `package-publisher` policy attached to it.
+
 ```hcl
 module "jumphost_profile" {
-  source         = "infrahouse/instance-profile/aws"
-  version        = "~> 1.0"
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.6.2"
+  
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
   extra_policies = {
@@ -61,6 +70,7 @@ module "jumphost_profile" {
   }
 }
 ```
+
 ## Requirements
 
 | Name | Version |
