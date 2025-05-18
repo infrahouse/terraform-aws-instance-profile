@@ -10,3 +10,7 @@ data "aws_iam_policy_document" "assume" {
     actions = ["sts:AssumeRole"]
   }
 }
+
+data "aws_iam_policy" "ssm" {
+  name = "AmazonSSMManagedInstanceCore"
+}
