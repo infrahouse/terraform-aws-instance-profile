@@ -19,11 +19,18 @@ def test_module(profile_name, aws_region, test_role_arn, keep_after):
             dedent(
                 f"""
                 region       = "{aws_region}"
-                role_arn     = "{test_role_arn}"
                 profile_name = "{profile_name}"
                 """
             )
         )
+        if test_role_arn:
+            fp.write(
+                dedent(
+                    f"""
+                    role_arn     = "{test_role_arn}"
+                    """
+                )
+            )
 
     with terraform_apply(
         terraform_module_dir,
