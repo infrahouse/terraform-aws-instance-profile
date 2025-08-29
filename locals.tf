@@ -1,5 +1,5 @@
 locals {
-  module_version = "1.8.1"
+  module_version = "1.9.0"
 
   default_module_tags = merge(
     var.tags,

@@ -32,7 +32,7 @@ Now we're ready to create the instance profile.
 ```hcl
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.8.1"
+  version = "1.9.0"
   
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
@@ -72,7 +72,7 @@ And now we want to create the profile with the `package-publisher` policy attach
 ```hcl
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.8.1"
+  version = "1.9.0"
   
   permissions    = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name   = "jumphost"
@@ -89,7 +89,7 @@ Example showing tags and disabling SSM access:
 ```hcl
 module "custom_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.8.1"
+  version = "1.9.0"
 
   permissions  = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name = "custom-jumphost"
@@ -110,7 +110,7 @@ Example using a specific role name instead of auto-generated one:
 ```hcl
 module "named_profile" {
   source  = "infrahouse/instance-profile/aws"
-  version = "1.8.1"
+  version = "1.9.0"
 
   permissions  = data.aws_iam_policy_document.jumphost_permissions.json
   profile_name = "my-instance-profile"
