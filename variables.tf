@@ -3,6 +3,7 @@ variable "enable_ssm" {
   type        = bool
   default     = true
 }
+
 variable "extra_policies" {
   description = "A map of additional policy ARNs to attach to the instance role"
   type        = map(string)
@@ -22,10 +23,12 @@ variable "role_name" {
 
 variable "permissions" {
   description = "A JSON with a permissions policy. Note, a new policy will be created with these permissions."
+  type        = string
 }
 
 variable "tags" {
   description = "A map of tags to add to resources."
+  type        = map(string)
   default     = {}
 }
 
