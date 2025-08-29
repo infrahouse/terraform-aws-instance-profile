@@ -3,6 +3,15 @@
 This Terraform module creates and manages AWS IAM instance profiles for EC2 instances, 
 simplifying the process of attaching IAM roles to your instances.
 
+## Features
+
+- **Automatic SSM Integration**: Enables AWS Systems Manager access by default with `AmazonSSMManagedInstanceCore` policy
+- **Custom Policy Support**: Attach your own IAM policies via JSON policy documents
+- **Additional Policies**: Attach existing AWS managed or customer managed policies
+- **Flexible Role Naming**: Use custom role names or auto-generated names based on profile name
+- **Resource Tagging**: Apply consistent tags across all created IAM resources
+- **Terraform Best Practices**: Follows standard module conventions with proper outputs and variable validation
+
 ## Usage example
 
 ### Profile with embedded policy
@@ -37,16 +46,18 @@ This is the existing policy.
 
 ```hcl
 data "aws_iam_policy_document" "package-publisher" {
-  actions = [
-    "s3:ListBucket",
-    "s3:GetObject",
-    "s3:PutObject",
-    "s3:DeleteObject",
-  ]
-  resources = [
-    "arn:aws:s3:::infrahouse-release-focal/*",
-    "arn:aws:s3:::infrahouse-release-jammy/*"
-  ]
+  statement {
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = [
+      "arn:aws:s3:::infrahouse-release-focal/*",
+      "arn:aws:s3:::infrahouse-release-jammy/*"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "package-publisher" {
@@ -70,17 +81,54 @@ module "jumphost_profile" {
   }
 }
 ```
+
+### Profile with custom settings
+
+Example showing tags and disabling SSM access:
+
+```hcl
+module "custom_profile" {
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.8.1"
+
+  permissions  = data.aws_iam_policy_document.jumphost_permissions.json
+  profile_name = "custom-jumphost"
+  enable_ssm   = false
+
+  tags = {
+    Environment = "production"
+    Owner       = "devops-team"
+    Project     = "jumphost-infrastructure"
+  }
+}
+```
+
+### Profile with custom role name
+
+Example using a specific role name instead of auto-generated one:
+
+```hcl
+module "named_profile" {
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.8.1"
+
+  permissions  = data.aws_iam_policy_document.jumphost_permissions.json
+  profile_name = "my-instance-profile"
+  role_name    = "custom-ec2-role"
+}
+```
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.11 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.11, < 7.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.11 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.11, < 7.0 |
 
 ## Modules
 
