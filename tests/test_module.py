@@ -1,5 +1,5 @@
 import json
-from os import path as osp
+from os import path as osp, remove
 from textwrap import dedent
 
 import pytest
@@ -11,9 +11,39 @@ from tests.conftest import (
 )
 
 
+@pytest.mark.parametrize("aws_provider_version", ["~> 5.11", "~> 6.0"])
 @pytest.mark.parametrize("profile_name", ["foo", "very-long-name" * 10])
-def test_module(profile_name, aws_region, test_role_arn, keep_after):
+def test_module(
+    aws_provider_version, profile_name, aws_region, test_role_arn, keep_after
+):
     terraform_module_dir = osp.join(TERRAFORM_ROOT_DIR, "instance-profile")
+
+    # Delete .terraform.lock.hcl to allow provider version changes
+    lock_file_path = osp.join(terraform_module_dir, ".terraform.lock.hcl")
+    try:
+        remove(lock_file_path)
+    except FileNotFoundError:
+        pass
+
+    # Update the AWS provider version in terraform.tf
+    terraform_tf_path = osp.join(terraform_module_dir, "terraform.tf")
+
+    with open(terraform_tf_path, "w") as fp:
+        fp.write(
+            dedent(
+                f"""
+                terraform {{
+                  required_providers {{
+                    aws = {{
+                      source  = "hashicorp/aws"
+                      version = "{aws_provider_version}"
+                    }}
+                  }}
+                }}
+                """
+            )
+        )
+
     with open(osp.join(terraform_module_dir, "terraform.tfvars"), "w") as fp:
         fp.write(
             dedent(
