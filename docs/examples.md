@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "permissions" {
 }
 
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "web-server"
@@ -31,7 +31,7 @@ Attach AWS managed or customer managed policies in addition to the embedded one:
 
 ```hcl
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "monitoring-agent"
@@ -49,7 +49,7 @@ By default the module attaches `AmazonSSMManagedInstanceCore`. Opt out:
 
 ```hcl
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "isolated-worker"
@@ -64,7 +64,7 @@ Use an explicit role name instead of one generated from the profile name:
 
 ```hcl
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "my-instance-profile"
@@ -79,7 +79,7 @@ Use the profile in a launch template for an Auto Scaling Group:
 
 ```hcl
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "asg-worker"
@@ -109,7 +109,7 @@ secret:
 
 ```hcl
 module "instance_profile" {
-  source  = "infrahouse/instance-profile/aws"
+  source  = "registry.infrahouse.com/infrahouse/instance-profile/aws"
   version = "1.9.0"
 
   profile_name = "app-server"

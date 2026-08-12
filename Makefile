@@ -57,8 +57,8 @@ test-clean:  ## Run a test and destroy resources
 
 .PHONY: bootstrap
 bootstrap: install-hooks ## Bootstrap the development environment
-	pip install -U "pip ~= 25.2"
-	pip install -U "setuptools ~= 80.9"
+	pip install -U "pip ~= 26.2"
+	pip install -U "setuptools ~= 84.0"
 	pip install -r requirements.txt
 
 .PHONY: docs
