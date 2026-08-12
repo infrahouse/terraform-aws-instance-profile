@@ -1,18 +1,83 @@
 # terraform-aws-instance-profile
 
-This Terraform module creates and manages AWS IAM instance profiles for EC2 instances, 
+[![Need Help?](https://img.shields.io/badge/Need%20Help%3F-Contact%20Us-0066CC)](https://infrahouse.com/contact)
+[![Docs](https://img.shields.io/badge/docs-github.io-blue)](https://infrahouse.github.io/terraform-aws-instance-profile/)
+[![Registry](https://img.shields.io/badge/Terraform-Registry-purple?logo=terraform)](https://registry.terraform.io/modules/infrahouse/instance-profile/aws/latest)
+[![Release](https://img.shields.io/github/release/infrahouse/terraform-aws-instance-profile.svg)](https://github.com/infrahouse/terraform-aws-instance-profile/releases/latest)
+[![AWS IAM](https://img.shields.io/badge/AWS-IAM-orange?logo=amazonwebservices)](https://aws.amazon.com/iam/)
+[![AWS EC2](https://img.shields.io/badge/AWS-EC2-orange?logo=amazonec2)](https://aws.amazon.com/ec2/)
+[![Security](https://img.shields.io/github/actions/workflow/status/infrahouse/terraform-aws-instance-profile/vuln-scanner-pr.yml?label=Security)](https://github.com/infrahouse/terraform-aws-instance-profile/actions/workflows/vuln-scanner-pr.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
+This Terraform module creates and manages AWS IAM instance profiles for EC2 instances,
 simplifying the process of attaching IAM roles to your instances.
+
+## Why This Module?
+
+Attaching an IAM role to an EC2 instance takes four separate resources wired together in the
+right order: an IAM role with an EC2 trust policy, a permissions policy, one or more policy
+attachments, and the instance profile itself. This module reduces the boilerplate to a single
+module call:
+
+- **One input, complete profile**: pass a JSON policy document, get back a ready-to-use
+  instance profile.
+- **Safe naming**: role, policy, and profile names are truncated to respect AWS length limits,
+  so long service names don't break `terraform apply`.
+- **SSM by default**: instances are manageable via AWS Systems Manager Session Manager out of
+  the box — no SSH keys required.
+- **Provenance tags**: created resources are tagged with the module name and version for
+  auditability.
 
 ## Features
 
-- **Automatic SSM Integration**: Enables AWS Systems Manager access by default with `AmazonSSMManagedInstanceCore` policy
+- **Automatic SSM Integration**: Enables AWS Systems Manager access by default with the
+  `AmazonSSMManagedInstanceCore` policy
 - **Custom Policy Support**: Attach your own IAM policies via JSON policy documents
 - **Additional Policies**: Attach existing AWS managed or customer managed policies
 - **Flexible Role Naming**: Use custom role names or auto-generated names based on profile name
 - **Resource Tagging**: Apply consistent tags across all created IAM resources
 - **Terraform Best Practices**: Follows standard module conventions with proper outputs and variable validation
 
-## Usage example
+## Quick Start
+
+```hcl
+data "aws_iam_policy_document" "permissions" {
+  statement {
+    actions   = ["ec2:Describe*"]
+    resources = ["*"]
+  }
+}
+
+module "instance_profile" {
+  source  = "infrahouse/instance-profile/aws"
+  version = "1.9.0"
+
+  profile_name = "web-server"
+  permissions  = data.aws_iam_policy_document.permissions.json
+}
+```
+
+Reference the profile in an EC2 instance or launch template:
+
+```hcl
+resource "aws_instance" "web" {
+  # ...
+  iam_instance_profile = module.instance_profile.instance_profile_name
+}
+```
+
+## Documentation
+
+Full documentation is published on GitHub Pages:
+
+- [Overview](https://infrahouse.github.io/terraform-aws-instance-profile/)
+- [Getting Started](https://infrahouse.github.io/terraform-aws-instance-profile/getting-started/)
+- [Architecture](https://infrahouse.github.io/terraform-aws-instance-profile/architecture/)
+- [Configuration](https://infrahouse.github.io/terraform-aws-instance-profile/configuration/)
+- [Examples](https://infrahouse.github.io/terraform-aws-instance-profile/examples/)
+- [Troubleshooting](https://infrahouse.github.io/terraform-aws-instance-profile/troubleshooting/)
+
+## Usage
 
 ### Profile with embedded policy
 
@@ -33,9 +98,9 @@ Now we're ready to create the instance profile.
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
   version = "1.9.0"
-  
-  permissions    = data.aws_iam_policy_document.jumphost_permissions.json
-  profile_name   = "jumphost"
+
+  permissions  = data.aws_iam_policy_document.jumphost_permissions.json
+  profile_name = "jumphost"
 }
 ```
 
@@ -73,9 +138,9 @@ And now we want to create the profile with the `package-publisher` policy attach
 module "jumphost_profile" {
   source  = "infrahouse/instance-profile/aws"
   version = "1.9.0"
-  
-  permissions    = data.aws_iam_policy_document.jumphost_permissions.json
-  profile_name   = "jumphost"
+
+  permissions  = data.aws_iam_policy_document.jumphost_permissions.json
+  profile_name = "jumphost"
   extra_policies = {
     (aws_iam_policy.package-publisher.name) : aws_iam_policy.package-publisher.arn
   }
@@ -96,9 +161,9 @@ module "custom_profile" {
   enable_ssm   = false
 
   tags = {
-    Environment = "production"
-    Owner       = "devops-team"
-    Project     = "jumphost-infrastructure"
+    environment = "production"
+    owner       = "devops-team"
+    project     = "jumphost-infrastructure"
   }
 }
 ```
@@ -117,6 +182,8 @@ module "named_profile" {
   role_name    = "custom-ec2-role"
 }
 ```
+
+<!-- BEGIN_TF_DOCS -->
 
 ## Requirements
 
@@ -153,10 +220,10 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_ssm"></a> [enable\_ssm](#input\_enable\_ssm) | Add AmazonSSMManagedInstanceCore policy to the instance role to grant an EC2 instance the minimum set of permissions needed to use AWS Systems Manager (SSM) core functionality. | `bool` | `true` | no |
 | <a name="input_extra_policies"></a> [extra\_policies](#input\_extra\_policies) | A map of additional policy ARNs to attach to the instance role | `map(string)` | `{}` | no |
-| <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions. | `any` | n/a | yes |
+| <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions. | `string` | n/a | yes |
 | <a name="input_profile_name"></a> [profile\_name](#input\_profile\_name) | Instance profile name. | `string` | n/a | yes |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Profile role name. If given, it will be used. Otherwise, the profile name will be used as a name prefix. | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map(string)` | `{}` | no |
 | <a name="input_upstream_module"></a> [upstream\_module](#input\_upstream\_module) | Module that called this module. | `string` | `null` | no |
 
 ## Outputs
@@ -170,3 +237,19 @@ No modules.
 | <a name="output_instance_role_policy_arn"></a> [instance\_role\_policy\_arn](#output\_instance\_role\_policy\_arn) | Role policy ARN that the instance gets. |
 | <a name="output_instance_role_policy_attachment"></a> [instance\_role\_policy\_attachment](#output\_instance\_role\_policy\_attachment) | aws\_iam\_role\_policy\_attachment.profile.id |
 | <a name="output_instance_role_policy_name"></a> [instance\_role\_policy\_name](#output\_instance\_role\_policy\_name) | Role policy name that the instance gets. |
+<!-- END_TF_DOCS -->
+
+## Examples
+
+Working examples live in the [examples/](examples/) directory:
+
+- [basic](examples/basic/) — instance profile with an embedded permissions policy
+- [extra-policies](examples/extra-policies/) — instance profile with additional managed policies attached
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+This module is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
