@@ -27,3 +27,6 @@ override.tf.json
 
 .terraform.lock.hcl
 .idea
+
+# mkdocs build output
+site/
