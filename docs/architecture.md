@@ -20,7 +20,7 @@ graph TD
 | Resource | Purpose |
 |----------|---------|
 | `aws_iam_role.profile` | The role EC2 instances assume. Trust policy allows `ec2.amazonaws.com` to call `sts:AssumeRole`. |
-| `aws_iam_policy.profile` | Permissions policy created from the `permissions` JSON input, plus a default `ec2:DescribeTags` statement. |
+| `aws_iam_policy.profile` | Permissions policy created from the `permissions` JSON input, plus default statements for `ec2:DescribeTags` and the Inspector CIS session actions. |
 | `aws_iam_instance_profile.profile` | The instance profile that carries the role; its name is what you reference from EC2. |
 | `aws_iam_role_policy_attachment.profile` | Attaches the permissions policy to the role. |
 | `aws_iam_role_policy_attachment.extra` | One attachment per entry in `extra_policies` (`for_each`). |

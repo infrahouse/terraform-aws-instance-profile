@@ -1,6 +1,7 @@
 import json
 from os import path as osp, remove
 from textwrap import dedent
+from typing import Dict, List
 
 import pytest
 from pytest_infrahouse import terraform_apply
@@ -10,21 +11,34 @@ from tests.conftest import (
     TERRAFORM_ROOT_DIR,
 )
 
+# Amazon Inspector CIS scan prerequisites, see
+# https://docs.aws.amazon.com/inspector/latest/user/scanning-cis.html
+CIS_SESSION_ACTIONS = [
+    "inspector2:StartCisSession",
+    "inspector2:StopCisSession",
+    "inspector2:SendCisSessionTelemetry",
+    "inspector2:SendCisSessionHealth",
+]
 
-def simulate_action(iam_client, role_arn: str, action: str) -> str:
+
+def simulate_actions(iam_client, role_arn: str, actions: List[str]) -> Dict[str, str]:
     """
-    Evaluate whether the role's attached policies allow an action.
+    Evaluate whether the role's attached policies allow the given actions.
 
     :param iam_client: Boto3 IAM client.
     :param role_arn: ARN of the IAM role to evaluate.
-    :param action: IAM action name, e.g. ``ec2:DescribeTags``.
-    :return: IAM evaluation decision: ``allowed``, ``implicitDeny``, or ``explicitDeny``.
+    :param actions: IAM action names, e.g. ``["ec2:DescribeTags"]``.
+    :return: Map of action name to IAM evaluation decision:
+        ``allowed``, ``implicitDeny``, or ``explicitDeny``.
     """
     response = iam_client.simulate_principal_policy(
         PolicySourceArn=role_arn,
-        ActionNames=[action],
+        ActionNames=actions,
     )
-    return response["EvaluationResults"][0]["EvalDecision"]
+    return {
+        result["EvalActionName"]: result["EvalDecision"]
+        for result in response["EvaluationResults"]
+    }
 
 
 @pytest.mark.parametrize("aws_provider_version", ["~> 6.0"], ids=["aws-6"])
@@ -79,13 +93,22 @@ def test_module(
         LOG.info("%s", json.dumps(tf_output, indent=4))
         role_arn = tf_output["role_arn"]["value"]
 
+        decisions = simulate_actions(
+            iam_client,
+            role_arn,
+            ["ec2:DescribeTags", "ec2:DescribeVolumes"] + CIS_SESSION_ACTIONS,
+        )
+
         # The module grants ec2:DescribeTags by default (issue #30):
         # needed by the CloudWatch agent's ec2tagger and ASG lifecycle tooling.
-        assert simulate_action(iam_client, role_arn, "ec2:DescribeTags") == "allowed"
+        assert decisions["ec2:DescribeTags"] == "allowed"
+
+        # The module grants the Inspector CIS session actions by default
+        # (issue #33): without them the Inspector SSM plugin gets a 403 and
+        # CIS benchmark scans silently time out with zero checks.
+        for action in CIS_SESSION_ACTIONS:
+            assert decisions[action] == "allowed", f"{action} must be allowed"
 
         # Guard against over-granting: the module must not add permissions
         # beyond what the caller passed plus the documented defaults.
-        assert (
-            simulate_action(iam_client, role_arn, "ec2:DescribeVolumes")
-            == "implicitDeny"
-        )
+        assert decisions["ec2:DescribeVolumes"] == "implicitDeny"
