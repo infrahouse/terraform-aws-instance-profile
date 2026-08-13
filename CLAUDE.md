@@ -51,8 +51,8 @@ generated with git-cliff (`cliff.toml`) from conventional commits.
 
 `tests/test_module.py` uses the `terraform_apply` fixture from pytest-infrahouse to apply the root config in
 `test_data/instance-profile/`, which calls the module via `source = "../../"`. The test **overwrites**
-`test_data/instance-profile/terraform.tf` and `terraform.tfvars` at runtime (it's parametrized over AWS
-provider versions `~> 5.11` and `~> 6.0`, and over short/128-char-truncated profile names), so don't treat the
+`test_data/instance-profile/terraform.tf` and `terraform.tfvars` at runtime (it's parametrized over the AWS
+provider version `~> 6.0` and over short/128-char-truncated profile names), so don't treat the
 committed contents of those files as authoritative.
 
 ### Git hooks and generated files

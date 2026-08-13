@@ -27,7 +27,7 @@ def simulate_action(iam_client, role_arn: str, action: str) -> str:
     return response["EvaluationResults"][0]["EvalDecision"]
 
 
-@pytest.mark.parametrize("aws_provider_version", ["~> 5.11", "~> 6.0"])
+@pytest.mark.parametrize("aws_provider_version", ["~> 6.0"], ids=["aws-6"])
 @pytest.mark.parametrize("profile_name", ["foo", "very-long-name" * 10])
 def test_module(
     aws_provider_version,
