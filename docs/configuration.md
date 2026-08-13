@@ -36,6 +36,14 @@ module "profile" {
 }
 ```
 
+!!! note
+    The module automatically adds `ec2:DescribeTags` to the supplied permissions.
+    Standard instance tooling depends on it — the CloudWatch agent's ec2tagger reads
+    the `aws:autoscaling:groupName` tag to populate the `AutoScalingGroupName` metric
+    dimension, and Auto Scaling lifecycle tooling discovers the instance's own ASG the
+    same way. The action is read-only and cannot be scoped to a resource
+    (AWS API limitation).
+
 ## Optional Inputs
 
 ### `enable_ssm`
