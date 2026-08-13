@@ -4,7 +4,7 @@ This guide walks you through deploying your first instance profile with the modu
 
 ## Prerequisites
 
-- **Terraform** with the AWS provider `>= 5.11, < 7.0`.
+- **Terraform** with the AWS provider `>= 6.0, < 7.0`.
 - **AWS credentials** with permissions to manage IAM resources:
   `iam:CreateRole`, `iam:CreatePolicy`, `iam:CreateInstanceProfile`,
   `iam:AttachRolePolicy`, `iam:AddRoleToInstanceProfile`, `iam:TagRole`,
