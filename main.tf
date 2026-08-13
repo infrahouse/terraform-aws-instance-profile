@@ -1,7 +1,7 @@
 resource "aws_iam_policy" "profile" {
   # expected length of name_prefix to be in the range (1 - 102)
   name_prefix = substr(var.profile_name, 0, 102)
-  policy      = var.permissions
+  policy      = data.aws_iam_policy_document.permissions.json
   tags        = local.default_module_tags
 }
 

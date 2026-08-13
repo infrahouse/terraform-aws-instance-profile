@@ -22,7 +22,11 @@ variable "role_name" {
 }
 
 variable "permissions" {
-  description = "A JSON with a permissions policy. Note, a new policy will be created with these permissions."
+  description = <<-EOT
+    A JSON with a permissions policy. Note, a new policy will be created with these permissions.
+    The module adds ec2:DescribeTags to the given permissions - the CloudWatch agent
+    and Auto Scaling lifecycle tooling need it, and it cannot be scoped to a resource.
+  EOT
   type        = string
 }
 

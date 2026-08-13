@@ -195,7 +195,7 @@ module "named_profile" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.11, < 7.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.59.0 |
 
 ## Modules
 
@@ -213,6 +213,7 @@ No modules.
 | [aws_iam_role_policy_attachment.ssm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_policy.ssm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy) | data source |
 | [aws_iam_policy_document.assume](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -220,7 +221,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_enable_ssm"></a> [enable\_ssm](#input\_enable\_ssm) | Add AmazonSSMManagedInstanceCore policy to the instance role to grant an EC2 instance the minimum set of permissions needed to use AWS Systems Manager (SSM) core functionality. | `bool` | `true` | no |
 | <a name="input_extra_policies"></a> [extra\_policies](#input\_extra\_policies) | A map of additional policy ARNs to attach to the instance role | `map(string)` | `{}` | no |
-| <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions. | `string` | n/a | yes |
+| <a name="input_permissions"></a> [permissions](#input\_permissions) | A JSON with a permissions policy. Note, a new policy will be created with these permissions.<br/>The module adds ec2:DescribeTags to the given permissions - the CloudWatch agent<br/>and Auto Scaling lifecycle tooling need it, and it cannot be scoped to a resource. | `string` | n/a | yes |
 | <a name="input_profile_name"></a> [profile\_name](#input\_profile\_name) | Instance profile name. | `string` | n/a | yes |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | Profile role name. If given, it will be used. Otherwise, the profile name will be used as a name prefix. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map(string)` | `{}` | no |

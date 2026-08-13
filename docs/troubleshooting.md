@@ -54,6 +54,19 @@ the SSM agent — it caches credentials:
 sudo systemctl restart amazon-ssm-agent # or snap.amazon-ssm-agent.amazon-ssm-agent
 ```
 
+## `ec2tagger: Unable to describe ec2 tags` in the CloudWatch agent log
+
+```text
+ec2tagger: Unable to describe ec2 tags for initial retrieval
+UnauthorizedOperation: You are not authorized to perform this operation.
+```
+
+The CloudWatch agent's ec2tagger needs `ec2:DescribeTags` to resolve the
+`AutoScalingGroupName` metric dimension. The module grants this permission by default,
+so if you see this error, the instance is running a profile created by an older module
+version — upgrade the module and re-apply, or add the action to your `permissions`
+document.
+
 ## `MalformedPolicyDocument` on apply
 
 ```text
