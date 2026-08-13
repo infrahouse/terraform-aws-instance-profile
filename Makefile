@@ -1,4 +1,7 @@
 .DEFAULT_GOAL := help
+# bash + pipefail so `pytest ... | tee` still fails the target when pytest fails
+SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
 
 define PRINT_HELP_PYSCRIPT
 import re, sys
@@ -13,6 +16,10 @@ export PRINT_HELP_PYSCRIPT
 
 TEST_REGION="us-west-2"
 TEST_ROLE="arn:aws:iam::303467602807:role/instance-profile-tester"
+TEST_LOG = pytest-$(shell date +%Y%m%d-%H%M%S)-output.log
+# Set KEEP_AFTER=yes to keep AWS resources after a test run
+KEEP_AFTER ?= no
+PYTEST_KEEP_FLAG = $(if $(filter yes true 1,$(KEEP_AFTER)),--keep-after,)
 
 help: install-hooks
 	@python -c "$$PRINT_HELP_PYSCRIPT" < Makefile
@@ -46,14 +53,23 @@ test-keep:  ## Run a test and keep resources
 		--aws-region=${TEST_REGION} \
 		--test-role-arn=${TEST_ROLE} \
 		--keep-after \
-		tests/test_module.py
+		tests/test_module.py 2>&1 | tee $(TEST_LOG)
 
 .PHONY: test-clean
 test-clean:  ## Run a test and destroy resources
 	pytest -xvvs \
 		--aws-region=${TEST_REGION} \
 		--test-role-arn=${TEST_ROLE} \
-		tests/test_module.py
+		tests/test_module.py 2>&1 | tee $(TEST_LOG)
+
+.PHONY: test-cis
+test-cis:  ## Run the Inspector CIS e2e scan test (slow, ad-hoc, ~30 min; KEEP_AFTER=yes to keep resources)
+	pytest -xvvs \
+		--aws-region=${TEST_REGION} \
+		--test-role-arn=${TEST_ROLE} \
+		--run-cis-e2e \
+		$(PYTEST_KEEP_FLAG) \
+		tests/test_cis_e2e.py 2>&1 | tee $(TEST_LOG)
 
 .PHONY: bootstrap
 bootstrap: install-hooks ## Bootstrap the development environment
@@ -69,7 +85,8 @@ docs: ## Regenerate the terraform-docs section in README.md
 clean:  ## Remove various artifacts
 	rm -rf .pytest_cache \
 		tf-apply-trace.txt \
-		tf-destroy-trace.txt
+		tf-destroy-trace.txt \
+		pytest-*-output.log
 	find test_data examples -name '.terraform' -exec rm -fr {} +
 	find test_data examples -name '.terraform.lock.hcl' -delete
 	find test_data examples -name 'terraform.tfstate*' -delete

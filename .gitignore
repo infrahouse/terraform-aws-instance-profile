@@ -30,3 +30,6 @@ override.tf.json
 
 # mkdocs build output
 site/
+
+# test run logs
+pytest-*-output.log
