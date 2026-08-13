@@ -24,8 +24,9 @@ variable "role_name" {
 variable "permissions" {
   description = <<-EOT
     A JSON with a permissions policy. Note, a new policy will be created with these permissions.
-    The module adds ec2:DescribeTags to the given permissions - the CloudWatch agent
-    and Auto Scaling lifecycle tooling need it, and it cannot be scoped to a resource.
+    The module adds permissions every EC2 instance needs: ec2:DescribeTags (the CloudWatch
+    agent and Auto Scaling lifecycle tooling need it) and the inspector2 CIS session actions
+    (Amazon Inspector CIS benchmark scans). Neither can be scoped to a resource.
   EOT
   type        = string
 }

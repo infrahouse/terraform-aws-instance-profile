@@ -67,6 +67,18 @@ so if you see this error, the instance is running a profile created by an older 
 version — upgrade the module and re-apply, or add the action to your `permissions`
 document.
 
+## Inspector CIS scans time out with zero checks
+
+Amazon Inspector reports the instance as `TIMED_OUT` / `SCAN_IN_PROGRESS` and the CIS
+scan completes with 0 checks, while regular Inspector vulnerability scanning works fine.
+The instance's own log shows the Inspector SSM plugin getting a 403 on
+`inspector2:StartCisSession`.
+
+The module grants the required `inspector2` CIS session permissions by default, so if
+you see this, the instance profile was created by an older module version — upgrade the
+module and re-apply. Note that CIS scans also require the instance to be SSM-managed
+(`enable_ssm = true`, the default, or equivalent permissions supplied by you).
+
 ## `MalformedPolicyDocument` on apply
 
 ```text

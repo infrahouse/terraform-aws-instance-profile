@@ -37,12 +37,18 @@ module "profile" {
 ```
 
 !!! note
-    The module automatically adds `ec2:DescribeTags` to the supplied permissions.
-    Standard instance tooling depends on it — the CloudWatch agent's ec2tagger reads
-    the `aws:autoscaling:groupName` tag to populate the `AutoScalingGroupName` metric
-    dimension, and Auto Scaling lifecycle tooling discovers the instance's own ASG the
-    same way. The action is read-only and cannot be scoped to a resource
-    (AWS API limitation).
+    The module automatically adds permissions that standard instance tooling depends on:
+
+    - `ec2:DescribeTags` — the CloudWatch agent's ec2tagger reads the
+      `aws:autoscaling:groupName` tag to populate the `AutoScalingGroupName` metric
+      dimension, and Auto Scaling lifecycle tooling discovers the instance's own ASG
+      the same way.
+    - `inspector2:StartCisSession`, `inspector2:StopCisSession`,
+      `inspector2:SendCisSessionTelemetry`, `inspector2:SendCisSessionHealth` — the
+      Amazon Inspector SSM plugin uses instance profile credentials to run CIS
+      benchmark scans; without them the scans silently time out with zero checks.
+
+    None of these actions can be scoped to a resource (AWS API limitation).
 
 ## Optional Inputs
 
